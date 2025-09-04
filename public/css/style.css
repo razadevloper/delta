@@ -5,7 +5,7 @@ body{
     font-family: "Plus Jakarta Sans", sans-serif !important;
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    /* height: 100vh; */
 }
 .main-conatiner{
     flex: 1;
@@ -173,4 +173,14 @@ body{
 }
 #map{
     height: 250px;
+}
+.card-body{
+    margin-top: 15px;
+}
+
+@media(max-width:1199px) {
+    .crad-img {
+        height: 15rem;
+    }
+
 }

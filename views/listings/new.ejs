@@ -24,10 +24,32 @@
                     <input type="file" name="listing[image]" class="form-control" required>
                 </div>
 
-                <div class="mb-3">
-                    <label for="price" class="form-label">Price</label>
-                    <input type="text" name="listing[price]" placeholder="Enter Price" class="form-control" required>
-                    <div class="invalid-feedback">Price Should be Valid</div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Price</label>
+                            <input type="text" name="listing[price]" placeholder="Enter Price" class="form-control" required>
+                            <div class="invalid-feedback">Price Should be Valid</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Category</label>
+                            <select class="form-select" id="category" name="listing[category]" required>
+                                <option value="">-- Select Category --</option>
+                                <option value="Trending">Trending</option>
+                                <option value="Rooms">Rooms</option>
+                                <option value="Iconic City">Iconic City</option>
+                                <option value="Mountain">Mountain</option>
+                                <option value="Castles">Castles</option>
+                                <option value="Amazing Polls">Amazing Polls</option>
+                                <option value="Camping">Camping</option>
+                                <option value="Farms">Farms</option>
+                                <option value="Artic">Artic</option>
+                            </select>
+                        </div>
+
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-4">

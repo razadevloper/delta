@@ -1,3 +1,4 @@
+const { escapeRegExpChars } = require("ejs/lib/utils");
 const Listing = require("../model/listing");
 const geocodeLocation = require("../utlls/geocode");
 
@@ -33,21 +34,19 @@ module.exports.showListing = async (req, res) => {
 
 module.exports.creatListing = async (req, res) => {
     try {
-        const { location } = req.body.listing;
-
-        // yeh line geocoding ke liye hai:
-        const geometry = await geocodeLocation(location);  // yeh tumhare utils se data laata hai
+        const { location, category} = req.body.listing;
+        if(category){
+            req.body.listing.category = category.trim().toLowerCase();
+        }
+        const geometry = await geocodeLocation(location); 
         console.log(geometry);
-
-        // ab tumhare existing code me geometry assign kar do:
         const newListing = new Listing(req.body.listing);
         newListing.owner = req.user._id;
         newListing.image = {
             url: req.file.path,
             filename: req.file.filename
         };
-        newListing.geometry = geometry;  // yeh line add karo
-
+        newListing.geometry = geometry;
         await newListing.save();
         req.flash("success", "Listing Added Successfully");
         res.redirect("/listings");
@@ -91,3 +90,52 @@ module.exports.deleteListing = async (req, res) => {
     req.flash("success", "Listing Deleted");
     res.redirect("/listings");
 };
+
+
+module.exports.getListingsByCategory = async (req, res) => {
+    const categoryName = req.params.category.toLowerCase();
+    let listings = await Listing.find({ category: categoryName });
+
+    if (listings.length === 0) {
+        req.flash("error", "Listing Not Found");
+        return res.redirect("/listings");
+    }
+    res.render("listings/index", { allListings: listings });
+};
+
+
+module.exports.searchListing = async (req, res) => {
+    try {
+        const query = req.query.q;
+        if (!query || query.trim() === "") {
+            req.flash("error", "Please enter a search term");
+            return res.redirect("/listings");
+        }
+
+        function escapeRegex(text){
+            return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        }
+
+        let searchQuery = escapeRegex(query);
+
+        let listings = await Listing.find({
+            $or: [
+                { title: { $regex: searchQuery, $options: "i" } },
+                { category: { $regex: searchQuery, $options: "i" } },
+                { location: { $regex: searchQuery, $options: "i" } }
+            ]
+        });
+
+        if (listings.length > 0) {
+            res.render("listings/index", { allListings: listings });
+        } else {
+            req.flash("error", "No Data Found");
+            res.redirect("/listings");
+        }
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Server Error");
+    }
+};
+

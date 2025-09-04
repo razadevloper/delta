@@ -17,10 +17,11 @@ router
         upload.single('listing[image]'),
         wrapAsync(listingController.creatListing)
     );
-    
+
 
 // ADD NEW LISTING AND CREAT NEW LISTING
 router.get("/new", isLoggedIn, listingController.renderNewForm);
+router.get("/search", wrapAsync(listingController.searchListing));
 
 router
     .route("/:id")
@@ -37,6 +38,11 @@ router
         isOwner,
         wrapAsync(listingController.deleteListing)
     )
+
+router.get(
+    "/category/:category",
+    wrapAsync(listingController.getListingsByCategory)
+);
 
 
 
